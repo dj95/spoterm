@@ -196,6 +196,7 @@ class MainLayout(urwid.Frame):
             self.__artists = search.artists
             self.__tracks = search.tracks
             self.__draw_divider()
+            self.__search_mode = False
             return
         
         self.__input.set_caption('$ ')
