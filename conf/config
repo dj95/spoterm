@@ -1,0 +1,14 @@
+# This is the configuraion file for spoterm.
+#
+# Example:
+#
+# username = test
+# password = test
+# appkey = ~/.spoterm/spotify_appkey.key
+
+# credentials
+username = 
+password =
+
+# appkey 
+appkey = ~/.spoterm/spotify_appkey.key

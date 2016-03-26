@@ -1,0 +1,4 @@
+*.key
+tmp/
+__pycache__/
+*.sw[o,p]
