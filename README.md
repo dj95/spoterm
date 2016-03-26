@@ -27,7 +27,9 @@ A simple tui for spotify.
 
 - Command-Mode, when you press `:`
   - `:pl` or `:playlists` list all your playlists
-  - `:s [number]` or `:select [number]` loads the playlist, you select with the number
+  - `:s p[number]` or `:select p[number]` loads the playlist, you select with the number
+  - `:s a[number]` or `:select a[number]` loads the artist, you select with the number
+  - `:s al[number]` or `:select al[number]` loads the album, you select with the number
   - `:p t[number]` or `:play t[number]` plays the track of your selected playlist or search
 - Search-Mode, when you press `/`
   - Just type in a title or artist name and watch the results

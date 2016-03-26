@@ -63,7 +63,10 @@ class MainLayout(urwid.Frame):
         self.__tracks_last_search = None
         self.__audio = None
         self.__playlists = None
+        self.__albums = None
+        self.__selected_album = None
         self.__selected_playlist = None
+        self.__selected_artist = None
         self.__play = False
 
         # log in, if config exists
@@ -110,24 +113,50 @@ class MainLayout(urwid.Frame):
             args = inp.split(' ')
             if len(args) == 2:
                 if args[1].startswith('a'): # play album
+                    
                     return
                 elif args[1].startswith('t'): # play track
                     self.__playback_thread.set_tracklist(self.__tracks) # use playback thread for advanced tracklist handling
                     self.__playback_thread.set_tracknumber(int(args[1][1:]) - 1)
                     self.__playback_thread.set_next()
                     self.__play = True
+                    self.__playing.set_caption('|> ')
                     return
-        elif inp.startswith('select') or inp.startswith('s '): # select shown playlist
+        elif inp.startswith('select') or inp.startswith('s '): # select shown playlist or artist
             args = inp.split(' ')
             if len(args) == 2:
-                self.__selected_playlist = self.__playlists[int(args[1]) - 1]
-                self.__walker.append(urwid.Text(('normal', 'selected playlist: ' + self.__selected_playlist.name + '\n'), urwid.LEFT))
-                self.__list.set_focus(len(self.__walker) - 1)
-                self.__tracks = self.__selected_playlist.tracks
-                for i in range(len(self.__selected_playlist.tracks)):
-                    self.__walker.append(urwid.Text(('normal', str(i + 1) + ') '+ str(self.__selected_playlist.tracks[i].name)), urwid.LEFT))
+                if args[1].startswith('p'): #  select playlist
+                    self.__selected_playlist = self.__playlists[int(args[1][1:]) - 1]
+                    self.__walker.append(urwid.Text(('normal', 'selected playlist: ' + self.__selected_playlist.name + '\n'), urwid.LEFT))
                     self.__list.set_focus(len(self.__walker) - 1)
-                self.__draw_divider()
+                    self.__tracks = self.__selected_playlist.tracks
+                    for i in range(len(self.__selected_playlist.tracks)):
+                        self.__walker.append(urwid.Text(('normal', str(i + 1) + ') '+ str(self.__selected_playlist.tracks[i].name)), urwid.LEFT))
+                        self.__list.set_focus(len(self.__walker) - 1)
+                    self.__draw_divider()
+                    return
+                if args[1].startswith('al'): # select album
+                    self.__selected_album = self.__albums[int(args[1][2:]) - 1]
+                    browser = self.__selected_album.browse()
+                    browser.load()
+                    track_names = []
+                    for i in range(len(browser.tracks)):
+                        track_names.append(browser.tracks[i].name)
+                    self.__draw_results('tracks', track_names)
+                    self.__draw_divider
+                    self.__tracks = browser.tracks
+                    return
+                if args[1].startswith('a'): # select artist
+                    self.__selected_artist = self.__artists[int(args[1][1:]) - 1]
+                    browser = self.__selected_artist.browse()
+                    browser.load()
+                    self.__albums = browser.albums
+                    album_names = []
+                    for i in range(len(browser.albums)):
+                        album_names.append(browser.albums[i].name)
+                    self.__draw_results('albums', album_names)
+                    self.__draw_divider()
+                    return
         elif inp.lower() == 'playlists' or inp.lower() == 'pl': # show all personal playlists
             if len(self.__session.playlist_container) > 0:
                 playlists = [p.name for p in self.__session.playlist_container]
@@ -220,11 +249,13 @@ class MainLayout(urwid.Frame):
                 self.__session.player.play()
                 self.__input.set_caption('$ ')
                 self.__input.set_edit_text('')
+                self.__playing.set_caption('|> ')
                 self.__play = True
             else: # pause playback
                 self.__session.player.pause()
                 self.__input.set_caption('$ ')
                 self.__input.set_edit_text('')
+                self.__playing.set_caption('|| ')
                 self.__play = False
             return
         elif key == 's' and not self.__command_mode and not self.__search_mode: # stop track
