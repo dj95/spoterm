@@ -31,6 +31,7 @@ A simple tui for spotify.
   - `:s a[number]` or `:select a[number]` loads the artist, you select with the number
   - `:s al[number]` or `:select al[number]` loads the album, you select with the number
   - `:p t[number]` or `:play t[number]` plays the track of your selected playlist or search
+  - `:p a[number]` or `:play a[number]` plays all tracks of your selected artist
 - Search-Mode, when you press `/`
   - Just type in a title or artist name and watch the results
 - `h` plays the previous track
