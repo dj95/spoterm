@@ -47,6 +47,7 @@ A simple tui for spotify.
 - improve ui
 - move spotify-appkey location
 - find suitable license
+- error handling(!!!)
 
 ------------------------
 
