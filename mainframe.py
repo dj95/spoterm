@@ -112,8 +112,16 @@ class MainLayout(urwid.Frame):
         elif inp.startswith('play') or inp.startswith('p '):
             args = inp.split(' ')
             if len(args) == 2:
-                if args[1].startswith('a'): # play album
-                    
+                if args[1].startswith('a'): # play artist
+                    self.__selected_artist = self.__artists[int(args[1][1:]) - 1]
+                    browser = self.__selected_artist.browse()
+                    browser.load()
+                    self.__tracks = browser.tracks
+                    self.__playback_thread.set_tracklist(self.__tracks) # use playback thread for advanced tracklist handling
+                    self.__playback_thread.set_tracknumber(0)
+                    self.__playback_thread.set_next()
+                    self.__play = True
+                    self.__playing.set_caption('|> ')
                     return
                 elif args[1].startswith('t'): # play track
                     self.__playback_thread.set_tracklist(self.__tracks) # use playback thread for advanced tracklist handling
